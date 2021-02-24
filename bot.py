@@ -22,7 +22,7 @@ def help(update, context):
 
 def echo(update, context):
     """Echo the user message."""
-    update.message.reply_text(update.message.text)
+    update.message.reply_text(update.message.text + "coglione")
 
 def error(update, context):
     """Log Errors caused by Updates."""
