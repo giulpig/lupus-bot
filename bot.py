@@ -77,7 +77,8 @@ def join(update, context):
 
     #update.message.reply_text(str(update.message.from_user.id) + " v0")
     
-    if state == SETPLAYERS:
+    if state == State.SETPLAYERS:
+        update.message.reply_text("sono qui bitch")
         #update.message.reply_text(update.message.chat.username + " v1")
         players.append(Player("", update.message.from_user.id))
         update.message.reply_text(str(update.message.from_user.id))
