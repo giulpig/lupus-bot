@@ -76,12 +76,13 @@ def update_from_text(update, context):
             temp = int(update.message.text)
             update.message.reply_text('got input')
         except Exception as e:
-            update.message.reply_text('Wrong input, this must be a number')
+            pass
         
         if(temp < 4 or temp > 30):
-            update.message.reply_text('Wrong input, this must be a positive number between 3 and 30')
+            update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
         
         else:
+            update.message.reply_text('Sono qui')
             n_players = temp
             state = State.SETPLAYERS
             update.message.reply_text('There are ' + n_players + ' players')
