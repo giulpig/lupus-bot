@@ -34,6 +34,8 @@ class State(Enum):
     PEASANTED = 7
     FINISHED = 8
     
+state = State.STARTED
+    
 
 
 # Define a few command handlers. These usually take the two arguments update and
@@ -68,6 +70,7 @@ def update_from_text(update, context):
         temp = 0
         try:
             temp = int(update.message.text)
+            update.message.reply_text('got input')
         except Exception as e:
             update.message.reply_text('Wrong input, this must be a number')
         
