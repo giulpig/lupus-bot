@@ -75,16 +75,16 @@ def join(update, context):
     global n_players
     global players
 
-    update.message.reply_text(str(update.message.from_user.id) + " v0")
+    #update.message.reply_text(str(update.message.from_user.id) + " v0")
     
     if state == SETPLAYERS:
-        update.message.reply_text(update.message.chat.username + " v1")
-        players.append(Player("", update.message.chat.username))
-        update.message.reply_text(update.message.chat.username)
+        #update.message.reply_text(update.message.chat.username + " v1")
+        players.append(Player("", update.message.from_user.id))
+        update.message.reply_text(str(update.message.from_user.id))
         if len(players) == n_players:
             state = State.JOINED
             for i in players:
-                update.message.reply_text(i.pid)
+                update.message.reply_text(str(i.pid))
     
 
         
