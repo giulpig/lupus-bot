@@ -85,8 +85,7 @@ def update_from_text(update, context):
         else:
             n_players = temp
             state = State.SETPLAYERS
-            update.message.reply_text('Sono qui')
-            update.message.reply_text('There are ' + n_players + ' players')
+            update.message.reply_text('There are ' + str(n_players) + ' players')
             
         return
         
