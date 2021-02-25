@@ -75,7 +75,7 @@ def join(update, context):
     global n_players
     global players
 
-    update.message.reply_text(update.message.chat.username + " v0")
+    update.message.reply_text(str(update.message.from_user.id) + " v0")
     
     if state == SETPLAYERS:
         update.message.reply_text(update.message.chat.username + " v1")
