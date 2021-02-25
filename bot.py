@@ -74,9 +74,13 @@ def join(update, context):
     global state
     global n_players
     global players
+
+    update.message.reply_text(update.message.chat.username + " v0")
     
     if state == SETPLAYERS:
+        update.message.reply_text(update.message.chat.username + " v1")
         players.append(Player("", update.message.chat.username))
+        update.message.reply_text(update.message.chat.username)
         if len(players) == n_players:
             state = State.JOINED
             for i in players:
