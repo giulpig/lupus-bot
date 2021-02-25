@@ -22,6 +22,12 @@ n_players = 0
 
 
 
+class Player():
+    def __init__(self, role, pid):
+        self.role = role
+        self.pid = pid
+
+
 
 class State(Enum):
     STARTED = 0
@@ -53,21 +59,38 @@ def help(update, context):
 
 
 
-
-
-
-
-
 def startGame(update, context):
     global state
+    global n_players
+    global players
 
     update.message.reply_text('How many players?')
     state = State.STARTED
+    players = []
+    
+    
+    
+def join(update, context):
+    global state
+    global n_players
+    global players
+    
+    if state == SETPLAYERS:
+        players.append(Player("", update.message.chat.username))
+        if len(players) == n_players:
+            state = State.JOINED
+            for i in players:
+                update.message.reply_text(i.pid)
+    
+
+        
+    
     
     
 def update_from_text(update, context):
     global state
     global n_players
+    global players
 
     if state == State.FINISHED:
         return
@@ -79,13 +102,17 @@ def update_from_text(update, context):
         except Exception as e:
             pass
         
+
+        ###DA RIMETTERE
         if(temp < 4 or temp > 30):
-            update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
+            pass
+            #update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
         
         else:
             n_players = temp
             state = State.SETPLAYERS
-            update.message.reply_text('There are ' + str(n_players) + ' players')
+            #update.message.reply_text('You set ' + str(n_players) + ' players')
+            update.message.reply_text('Now join with /join')
             
         return
         
@@ -127,8 +154,7 @@ def main():
     dp.add_handler(CommandHandler("help", help))
     
     dp.add_handler(CommandHandler("startgame", startGame)) #startGame handler
-    dp.add_handler(CommandHandler("join",      startGame)) #startGame handler
-    dp.add_handler(CommandHandler("stopjoin",  startGame)) #startGame handler
+    dp.add_handler(CommandHandler("join",      join))      #startGame handler
     dp.add_handler(CommandHandler("getroles",  startGame))
     
    
