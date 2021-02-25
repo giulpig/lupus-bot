@@ -104,7 +104,7 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if True:  #(temp < 4 or temp > 30):
+        if False:  #(temp < 4 or temp > 30):
             update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
         
         else:
