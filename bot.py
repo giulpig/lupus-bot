@@ -73,7 +73,6 @@ def update_from_text(update, context):
         
         if(temp < 4 or temp > 30):
             update.message.reply_text('Wrong input, this must be a positive number between 3 and 30')
-            break
         
         else:
             n_players = temp
@@ -99,6 +98,10 @@ def echo(update, context):
 def error(update, context):
     """Log Errors caused by Updates."""
     logger.warning('Update "%s" caused error "%s"', update, context.error)
+
+
+
+
 
 def main():
     """Start the bot."""
@@ -133,12 +136,6 @@ def main():
                           url_path=TOKEN)
     updater.bot.setWebhook('https://protected-inlet-23009.herokuapp.com/' + TOKEN)
     
-    
-    
-    
-    
-    
-
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
     # SIGTERM or SIGABRT. This should be used most of the time, since
     # start_polling() is non-blocking and will stop the bot gracefully.
