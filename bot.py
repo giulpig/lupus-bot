@@ -75,7 +75,7 @@ def update_from_text(update, context):
         temp = 0
         try:
             temp = int(update.message.text)
-            update.message.reply_text('got input')
+            #update.message.reply_text('got input')
         except Exception as e:
             pass
         
@@ -84,8 +84,8 @@ def update_from_text(update, context):
         
         else:
             n_players = temp
-            update.message.reply_text('Sono qui')
             state = State.SETPLAYERS
+            update.message.reply_text('Sono qui, state = ' + state)
             update.message.reply_text('There are ' + n_players + ' players')
             
         return
