@@ -67,6 +67,7 @@ def startGame(update, context):
     
 def update_from_text(update, context):
     global state
+    global n_players
 
     if state == State.FINISHED:
         return
@@ -82,10 +83,11 @@ def update_from_text(update, context):
             update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
         
         else:
-            update.message.reply_text('Sono qui')
             n_players = temp
+            update.message.reply_text('Sono qui')
             state = State.SETPLAYERS
             update.message.reply_text('There are ' + n_players + ' players')
+            
         return
         
         
