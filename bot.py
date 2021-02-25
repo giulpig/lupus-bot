@@ -59,11 +59,15 @@ def help(update, context):
 
 
 def startGame(update, context):
+    global state
+
     update.message.reply_text('How many players?')
     state = State.STARTED
     
     
 def update_from_text(update, context):
+    global state
+
     if state == State.FINISHED:
         return
     elif state == State.STARTED:
