@@ -15,10 +15,21 @@ logger = logging.getLogger(__name__)
 TOKEN = '1658482800:AAGvwDHhrxIeevOo3a9Ig5uJKFXOGgMDB90'
 
 
-#          0        1         2         3         4
-roles = ["wolf", "bitch", "medium", "madman", "peasant"]
+
+roles = {
+    
+    "wolf"    : 0,   #roles with number of players per role
+    "bitch"   : 0,
+    "medium"  : 0,
+    "madman"  : 0,
+    "peasant" : 0
+
+}
+
+
 players = []
 n_players = 0
+roled = 0
 
 
 
@@ -63,6 +74,7 @@ def startGame(update, context):
     global state
     global n_players
     global players
+    global roled
 
     update.message.reply_text('How many players?')
     state = State.STARTED
@@ -74,18 +86,19 @@ def join(update, context):
     global state
     global n_players
     global players
+    global roled
 
     #update.message.reply_text(str(update.message.from_user.id) + " v0")
     
     if state == State.SETPLAYERS:
-        update.message.reply_text("sono qui bitch")
         #update.message.reply_text(update.message.chat.username + " v1")
         players.append(Player("", update.message.from_user.id))
-        update.message.reply_text(str(update.message.from_user.id))
         if len(players) == n_players:
             state = State.JOINED
-            for i in players:
-                update.message.reply_text(str(i.pid))
+            #for i in players:
+            #    update.message.reply_text(str(i.pid))
+
+            update.message.reply_text("How many wolves?")
     
 
         
@@ -96,10 +109,12 @@ def update_from_text(update, context):
     global state
     global n_players
     global players
+    global roled
 
     if state == State.FINISHED:
         return
-    elif state == State.STARTED:
+
+    elif state == State.STARTED:  #input Nplayers
         temp = 0
         try:
             temp = int(update.message.text)
@@ -120,7 +135,29 @@ def update_from_text(update, context):
             
         return
         
+
+
+    elif state == State.JOINED:  #input Nwolfes
+        temp = 0
+        try:
+            temp = int(update.message.text)
+            #update.message.reply_text('got input')
+        except Exception as e:
+            pass
         
+
+        ###DA RIMETTERE
+        if False:  #(temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
+        
+        else:
+            roles["wolf"] = temp
+            roled += temp
+            state = State.WOLFED
+            update.message.reply_text(str(roles["wolf"]) + ' wolves')
+            update.message.reply_text('How many bitches?')
+            
+        return
         
 
 
