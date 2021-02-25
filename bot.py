@@ -154,8 +154,82 @@ def update_from_text(update, context):
             roles["wolf"] = temp
             roled += temp
             state = State.WOLFED
-            update.message.reply_text(str(roles["wolf"]) + ' wolves')
+            update.message.reply_text(str(roles["wolf"]) + ' wolf/ves')
             update.message.reply_text('How many bitches?')
+            
+        return
+
+
+
+    elif state == State.WOLFED:  #input Nbitches
+        temp = 0
+        try:
+            temp = int(update.message.text)
+            #update.message.reply_text('got input')
+        except Exception as e:
+            pass
+        
+
+        ###DA RIMETTERE
+        if False:  #(temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
+        
+        else:
+            roles["bitch"] = temp
+            roled += temp
+            state = State.BITCHED
+            update.message.reply_text(str(roles["bitch"]) + ' bitch/es')
+            update.message.reply_text('How many mediums?')
+            
+        return
+
+
+
+    elif state == State.BITCHED:  #input Nbitches
+        temp = 0
+        try:
+            temp = int(update.message.text)
+            #update.message.reply_text('got input')
+        except Exception as e:
+            pass
+        
+
+        ###DA RIMETTERE
+        if False:  #(temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
+        
+        else:
+            roles["medium"] = temp
+            roled += temp
+            state = State.MEDIUMED
+            update.message.reply_text(str(roles["medium"]) + ' medium/s')
+            update.message.reply_text('How many madmans?')
+            
+        return
+
+
+
+
+    elif state == State.MEDIUMED:  #input Nbitches
+        temp = 0
+        try:
+            temp = int(update.message.text)
+            #update.message.reply_text('got input')
+        except Exception as e:
+            pass
+        
+
+        ###DA RIMETTERE
+        if False:  #(temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, this must be a positive number between 4 and 30')
+        
+        else:
+            roles["madman"] = temp
+            roled += temp
+            state = State.MEDIUMED
+            update.message.reply_text(str(roles["madman"]) + ' madman/s')
+
+            update.message.reply_text("Ok, now everyone will have his role in a private chat")
             
         return
         
