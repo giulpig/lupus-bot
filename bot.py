@@ -98,8 +98,8 @@ def start(update, context):
 
         lst_users = db.distinct(key="uid")
 
-        for user in lst_users:
-            update.message.reply_text('UserID: ' + user)
+        #for user in lst_users:
+            #update.message.reply_text('UserID: ' + user)
 
         if str(update.message.from_user.id) in lst_users:
             #update.message.reply_text('Aggiorno: ' + str(update.message.from_user.id))
