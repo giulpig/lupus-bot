@@ -158,7 +158,6 @@ def join(update, context):
             #    update.message.reply_text(str(i.pid))
 
             lst_users = db.distinct(key="uid")
-            if not 
 
 
             update.message.reply_text("How many wolves?")
