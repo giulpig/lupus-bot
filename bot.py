@@ -92,7 +92,7 @@ def sync_database():
 def start(update, context):
     """Send a message when the command /start is issued."""
     """Saluto iniziale"""
-    if update.message.chat.type != "group":
+    if update.message.chat.type == "private":
         update.message.reply_text('Welcome, FIGA! If you have any questions, ask Hulio aka @giulpig')
 
         lst_users = db.distinct(key="uid")
@@ -211,6 +211,7 @@ def update_from_text(update, context):
             state = State.SETPLAYERS
             #update.message.reply_text('You set ' + str(n_players) + ' players')
             sync_database()
+
             update.message.reply_text('Now join with /join')
             
         return
