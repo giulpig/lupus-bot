@@ -3,6 +3,7 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import os
 from enum import Enum
 import pymongo
+import random
 
 
 #connect database
@@ -73,6 +74,9 @@ class Player():
 
 
 def sync_database():
+    global cids
+    global list_users
+
     cids = set()
     lst_users = db.distinct(key="uid")
     for i in lst_users:
@@ -89,7 +93,7 @@ def start(update, context):
     """Send a message when the command /start is issued."""
     """Saluto iniziale"""
     if update.message.chat.type != "group":
-        update.message.reply_text('Welcome, FIGA!')
+        update.message.reply_text('Welcome, FIGA! If you have any questions, ask Hulio aka @giulpig')
 
         lst_users = db.distinct(key="uid")
         if str(update.message.from_user.id) in lst_users:
@@ -113,6 +117,9 @@ def startGame(update, context):
     global active_uids
     global cids
     global roles
+
+    if update.message.chat.type != "group":
+        return
 
     roles = {
         "wolf"    : 0,   #reset globals
@@ -142,23 +149,28 @@ def join(update, context):
     global players
     global roled
 
+    if update.message.chat.type != "group":
+        return
+
     #update.message.reply_text(str(update.message.from_user.id) + " v0")
     
     if state == State.SETPLAYERS:
         #update.message.reply_text(update.message.chat.username + " v1")
         if not update.message.from_user.id in active_uids:
-            players.append(Player("", str(update.message.from_user.id), ""))
-            active_uids.add(update.message.from_user.id)
+
+            if not update.message.from_user.id in uid_to_cid:
+                update.message.reply_text("You must start the bot @lupus_bot_camplus in private chat first (ask Hulio @giulpig)")
+
+            else:
+                players.append(Player("", str(update.message.from_user.id), uid_to_cid[update.message.from_user.id]))
+                active_uids.add(update.message.from_user.id)
         else:
-            update.message.reply_text("You can't join twice")
+            update.message.reply_text("You can't join twice in a game")
 
         if len(players) == n_players:
             state = State.JOINED
             #for i in players:
             #    update.message.reply_text(str(i.pid))
-
-            lst_users = db.distinct(key="uid")
-
 
             update.message.reply_text("How many wolves?")
     
@@ -172,6 +184,11 @@ def update_from_text(update, context):
     global n_players
     global players
     global roled
+
+
+    if update.message.chat.type != "group":
+        return
+
 
     if state == State.FINISHED:
         return
@@ -193,6 +210,7 @@ def update_from_text(update, context):
             n_players = temp
             state = State.SETPLAYERS
             #update.message.reply_text('You set ' + str(n_players) + ' players')
+            sync_database()
             update.message.reply_text('Now join with /join')
             
         return
@@ -291,12 +309,28 @@ def update_from_text(update, context):
             state = State.MEDIUMED
             #update.message.reply_text(str(roles["madman"]) + ' madman/s')
 
-            update.message.reply_text("Ok, now everyone will have his role in a private chat")
-            
+            send_roles(update, context)
+
+            update.message.reply_text("Everyone should have recieved a private message with his role")
+
         return
         
 
 
+def send_roles(update, context):
+    global players
+    global roles
+
+    random.shuffle(players)
+
+    counter = 0
+    for role in roles:
+        for i in range(role):
+            players[counter].role = role
+            counter += 1
+
+    for player in players:
+        context.bot.send_message(chat_id=player.cid, text="You are a " + player.role)
 
 
 
