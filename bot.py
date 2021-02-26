@@ -101,6 +101,7 @@ def start(update, context):
             update.message.reply_text('UserID: ' + user)
 
         if str(update.message.from_user.id) in lst_users:
+            update.message.reply_text('Aggiungo: ' + str(update.message.from_user.id))
             db.update_one({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(message.chat.id)} })
         else:
             db.insert_one({"uid":str(update.message.from_user.id), "cid":str(message.chat.id)})
