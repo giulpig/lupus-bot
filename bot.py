@@ -102,10 +102,12 @@ def start(update, context):
 
         if str(update.message.from_user.id) in lst_users:
             update.message.reply_text('Aggiorno: ' + str(update.message.from_user.id))
-            db.update_one({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(message.chat.id)} })
+            db.update({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(message.chat.id)} })
+            update.message.reply_text('Aggiunto')
         else:
             update.message.reply_text('Aggiungo: ' + str(update.message.from_user.id))
-            db.insert_one({"uid":str(update.message.from_user.id), "cid":str(message.chat.id)})
+            db.insert({"uid":str(update.message.from_user.id), "cid":str(message.chat.id)})
+            update.message.reply_text('Aggiunto')
 
 
 
