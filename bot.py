@@ -109,6 +109,9 @@ def start(update, context):
             db.insert_one({"uid":str(update.message.from_user.id), "cid":str(update.message.chat.id)})
             update.message.reply_text('Aggiunto')
 
+    else:
+        update.message.reply_text("You can't start from here, start in private at @lupus_bot_camplus")
+
 
 
 
@@ -166,7 +169,9 @@ def join(update, context):
         #update.message.reply_text(update.message.chat.username + " v1")
         if not update.message.from_user.id in active_uids:
 
-            if not update.message.from_user.id in uid_to_cid:
+            if not str(update.message.from_user.id) in uid_to_cid:
+
+                update.message.reply_text("User " + str(update.message.from_user.id) + " not found")
                 update.message.reply_text("You must start the bot @lupus_bot_camplus in private chat first (ask Hulio @giulpig)")
 
             else:
