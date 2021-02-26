@@ -161,6 +161,8 @@ def join(update, context):
     global players
     global roled
 
+    user_id = str(update.message.from_user.id)
+
     if update.message.chat.type != "group":
         return
 
@@ -168,23 +170,21 @@ def join(update, context):
     
     if state == State.SETPLAYERS:
         #update.message.reply_text(update.message.chat.username + " v1")
-        if not update.message.from_user.id in active_uids:
+        if not user_id in active_uids:
 
-            if not str(update.message.from_user.id) in uid_to_cid:
+            if not user_id in uid_to_cid:
 
-                update.message.reply_text("User " + str(update.message.from_user.id) + " not found")
+                update.message.reply_text("User " + user_id + " not found")
                 update.message.reply_text("You must start the bot @lupus_bot_camplus in private chat first (ask Hulio @giulpig)")
 
             else:
-                players.append(Player("", str(update.message.from_user.id), uid_to_cid[update.message.from_user.id]))
-                active_uids.add(update.message.from_user.id)
+                players.append(Player("", user_id , uid_to_cid[user_id]))
+                active_uids.add(user_id)
         else:
             update.message.reply_text("You can't join twice in a game")
 
         if len(players) == n_players:
             state = State.JOINED
-            #for i in players:
-            #    update.message.reply_text(str(i.pid))
 
             update.message.reply_text("How many wolves?")
     
@@ -335,6 +335,7 @@ def update_from_text(update, context):
 def send_roles(update, context):
     global players
     global roles
+    global state
 
     random.shuffle(players)
 
@@ -346,6 +347,8 @@ def send_roles(update, context):
 
     for player in players:
         context.bot.send_message(chat_id=player.cid, text="You are a " + player.role)
+
+    state = State.FINISHED
 
 
 
