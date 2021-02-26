@@ -81,6 +81,7 @@ def sync_database():
     lst_users = db.distinct(key="uid")
     for i in lst_users:
         cid = db.find_one({"uid":i})["cid"]
+        uid_to_cid[i] = cid
         cids.add(cid)
 
 
