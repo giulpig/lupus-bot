@@ -102,11 +102,11 @@ def start(update, context):
 
         if str(update.message.from_user.id) in lst_users:
             update.message.reply_text('Aggiorno: ' + str(update.message.from_user.id))
-            db.update_one({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(message.chat.id)} })
+            db.update_one({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(update.message.chat.id)} })
             update.message.reply_text('Aggiunto')
         else:
             update.message.reply_text('Aggiungo: ' + str(update.message.from_user.id))
-            db.insert_one({"uid":str(update.message.from_user.id), "cid":str(message.chat.id)})
+            db.insert_one({"uid":str(update.message.from_user.id), "cid":str(update.message.chat.id)})
             update.message.reply_text('Aggiunto')
 
 
@@ -382,10 +382,6 @@ def main():
 
     # log all errors
     dp.add_error_handler(error)
-
-
-    db.insert_one({"uid":"ciccio", "cid":"caio"})
-
 
 
     # Start the Bot
