@@ -102,13 +102,13 @@ def start(update, context):
             update.message.reply_text('UserID: ' + user)
 
         if str(update.message.from_user.id) in lst_users:
-            update.message.reply_text('Aggiorno: ' + str(update.message.from_user.id))
+            #update.message.reply_text('Aggiorno: ' + str(update.message.from_user.id))
             db.update_one({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(update.message.chat.id)} })
-            update.message.reply_text('Aggiunto')
+            update.message.reply_text('Aptal, You were already registered')
         else:
-            update.message.reply_text('Aggiungo: ' + str(update.message.from_user.id))
+            #update.message.reply_text('Aggiungo: ' + str(update.message.from_user.id))
             db.insert_one({"uid":str(update.message.from_user.id), "cid":str(update.message.chat.id)})
-            update.message.reply_text('Aggiunto')
+            update.message.reply_text('You have beeen registered successfully (or at least I hope so)')
 
     else:
         update.message.reply_text("You can't start from here, start in private at @lupus_bot_camplus")
@@ -173,9 +173,9 @@ def join(update, context):
         if not user_id in active_uids:
 
             if not user_id in uid_to_cid:
-
-                update.message.reply_text("User " + user_id + " not found")
-                update.message.reply_text("You must start the bot @lupus_bot_camplus in private chat first (ask Hulio @giulpig)")
+                #update.message.reply_text("User " + user_id + " not found")
+                update.message.reply_text("User not found")
+                update.message.reply_text("You must start the bot @lupus_bot_camplus in private chat first (ask Hulio at @giulpig)")
 
             else:
                 players.append(Player("", user_id , uid_to_cid[user_id]))
@@ -326,7 +326,7 @@ def update_from_text(update, context):
 
             send_roles(update, context)
 
-            update.message.reply_text("Everyone should have recieved a private message with his role")
+            update.message.reply_text("Everyone should have recieved a private message with his role, have fun")
 
         return
         
@@ -357,7 +357,7 @@ def send_roles(update, context):
     
 def help(update, context):
     """Send a message when the command /help is issued."""
-    update.message.reply_text('Col cazzo che ti aiuto, non ho tempo da perdere, chiedi a Giulio')
+    update.message.reply_text('Col cazzo che ti aiuto, non ho tempo da perdere, chiedi a Hulio aka @giulpig')
 
 def error(update, context):
     """Log Errors caused by Updates."""
