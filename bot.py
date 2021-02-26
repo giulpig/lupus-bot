@@ -96,6 +96,10 @@ def start(update, context):
         update.message.reply_text('Welcome, FIGA! If you have any questions, ask Hulio aka @giulpig')
 
         lst_users = db.distinct(key="uid")
+
+        for user in lst_users:
+            update.message.reply_text('UserID: ' + user)
+
         if str(update.message.from_user.id) in lst_users:
             db.update_one({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(message.chat.id)} })
         else:
