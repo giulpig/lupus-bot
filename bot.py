@@ -324,6 +324,8 @@ def update_from_text(update, context):
             state = State.MEDIUMED
             #update.message.reply_text(str(roles["madman"]) + ' madman/s')
 
+            roles["peasant"] = n_players - roled
+
             send_roles(update, context)
 
             update.message.reply_text("Everyone should have recieved a private message with his role, have fun")
