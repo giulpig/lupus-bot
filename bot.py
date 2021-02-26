@@ -341,7 +341,7 @@ def send_roles(update, context):
 
     counter = 0
     for role in roles:
-        for i in range(role):
+        for i in range(roles[role]):
             players[counter].role = role
             counter += 1
 
