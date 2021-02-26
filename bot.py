@@ -2,6 +2,14 @@ import logging
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import os
 from enum import Enum
+import pymongo
+
+
+#connect database
+client = pymongo.MongoClient("mongodb+srv://giulpig:rznstvdE8sCd6A7k@cluster0.5z0dk.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+db_name = "Lupus_Data"
+collection_name = "users"
+db = client[db_name][collection_name]
 
 
 
@@ -16,29 +24,6 @@ TOKEN = '1658482800:AAGvwDHhrxIeevOo3a9Ig5uJKFXOGgMDB90'
 
 
 
-roles = {
-    
-    "wolf"    : 0,   #roles with number of players per role
-    "bitch"   : 0,
-    "medium"  : 0,
-    "madman"  : 0,
-    "peasant" : 0
-
-}
-
-
-players = []
-n_players = 0
-roled = 0
-
-
-
-class Player():
-    def __init__(self, role, pid):
-        self.role = role
-        self.pid = pid
-
-
 
 class State(Enum):
     STARTED = 0
@@ -50,8 +35,51 @@ class State(Enum):
     MADMANED = 6
     PEASANTED = 7
     FINISHED = 8
-    
+
+
+
+
+roles = {    
+    "wolf"    : 0,   #roles with number of players per role (input by players)
+    "bitch"   : 0,
+    "medium"  : 0,
+    "madman"  : 0,
+    "peasant" : 0               #
+}                               #
+                                #  RESET GLOBALS IN STARTGAME
+uid_to_cid = {}                 #
+players = []                    #
+active_uids = set()
+cids = set()
+n_players = 0
+roled = 0
+
 state = State.STARTED
+
+
+
+
+class Player():
+    def __init__(self, role, uid, cid):
+        self.role = role
+        self.uid = uid
+        self.cid = cid
+
+
+
+
+
+
+
+
+def sync_database():
+    cids = set()
+    lst_users = db.distinct(key="uid")
+    for i in lst_users:
+        cid = db.find_one({"uid":i})["cid"]
+        cids.add(cid)
+
+
     
 
 
@@ -60,11 +88,17 @@ state = State.STARTED
 def start(update, context):
     """Send a message when the command /start is issued."""
     """Saluto iniziale"""
-    update.message.reply_text('Welcome, FIGA!')
-    
-def help(update, context):
-    """Send a message when the command /help is issued."""
-    update.message.reply_text('Col cazzo che ti aiuto, non ho tempo da perdere, chiedi a Giulio')
+    if update.message.chat.type != "group":
+        update.message.reply_text('Welcome, FIGA!')
+
+        lst_users = db.distinct(key="uid")
+        if str(update.message.from_user.id) in lst_users:
+            db.update_one({"uid" : str(update.message.from_user.id)}, { "$set": { 'cid':  str(message.chat.id)} })
+        else:
+            db.insert_one({"uid":str(update.message.from_user.id), "cid":str(message.chat.id)})
+
+
+
 
 
 
@@ -75,10 +109,30 @@ def startGame(update, context):
     global n_players
     global players
     global roled
+    global uid_to_cid
+    global active_uids
+    global cids
+    global roles
+
+    roles = {
+        "wolf"    : 0,   #reset globals
+        "bitch"   : 0,
+        "medium"  : 0,
+        "madman"  : 0,
+        "peasant" : 0
+    }
+
+    uid_to_cid = {}
+    players = []
+    active_uids = set()
+    cids = set()
+    n_players = 0
+    roled = 0
+
+    state = State.STARTED
+
 
     update.message.reply_text('How many players?')
-    state = State.STARTED
-    players = []
     
     
     
@@ -92,11 +146,20 @@ def join(update, context):
     
     if state == State.SETPLAYERS:
         #update.message.reply_text(update.message.chat.username + " v1")
-        players.append(Player("", update.message.from_user.id))
+        if not update.message.from_user.id in active_uids:
+            players.append(Player("", str(update.message.from_user.id), ""))
+            active_uids.add(update.message.from_user.id)
+        else:
+            update.message.reply_text("You can't join twice")
+
         if len(players) == n_players:
             state = State.JOINED
             #for i in players:
             #    update.message.reply_text(str(i.pid))
+
+            lst_users = db.distinct(key="uid")
+            if not 
+
 
             update.message.reply_text("How many wolves?")
     
@@ -154,7 +217,7 @@ def update_from_text(update, context):
             roles["wolf"] = temp
             roled += temp
             state = State.WOLFED
-            update.message.reply_text(str(roles["wolf"]) + ' wolf/ves')
+            #update.message.reply_text(str(roles["wolf"]) + ' wolf/ves')
             update.message.reply_text('How many bitches?')
             
         return
@@ -178,7 +241,7 @@ def update_from_text(update, context):
             roles["bitch"] = temp
             roled += temp
             state = State.BITCHED
-            update.message.reply_text(str(roles["bitch"]) + ' bitch/es')
+            #update.message.reply_text(str(roles["bitch"]) + ' bitch/es')
             update.message.reply_text('How many mediums?')
             
         return
@@ -202,7 +265,7 @@ def update_from_text(update, context):
             roles["medium"] = temp
             roled += temp
             state = State.MEDIUMED
-            update.message.reply_text(str(roles["medium"]) + ' medium/s')
+            #update.message.reply_text(str(roles["medium"]) + ' medium/s')
             update.message.reply_text('How many madmans?')
             
         return
@@ -227,7 +290,7 @@ def update_from_text(update, context):
             roles["madman"] = temp
             roled += temp
             state = State.MEDIUMED
-            update.message.reply_text(str(roles["madman"]) + ' madman/s')
+            #update.message.reply_text(str(roles["madman"]) + ' madman/s')
 
             update.message.reply_text("Ok, now everyone will have his role in a private chat")
             
@@ -240,11 +303,10 @@ def update_from_text(update, context):
 
 
 
-
-def echo(update, context):
-    """Echo the user message."""
-    #update.message.reply_text(update.message.text + " coglione")
-    update.message.reply_text("sei un coglione")
+    
+def help(update, context):
+    """Send a message when the command /help is issued."""
+    update.message.reply_text('Col cazzo che ti aiuto, non ho tempo da perdere, chiedi a Giulio')
 
 def error(update, context):
     """Log Errors caused by Updates."""
@@ -270,7 +332,6 @@ def main():
     
     dp.add_handler(CommandHandler("startgame", startGame)) #startGame handler
     dp.add_handler(CommandHandler("join",      join))      #startGame handler
-    dp.add_handler(CommandHandler("getroles",  startGame))
     
    
     # on noncommand i.e message - echo the message on Telegram
@@ -279,6 +340,7 @@ def main():
 
     # log all errors
     dp.add_error_handler(error)
+
 
     # Start the Bot
     updater.start_webhook(listen="0.0.0.0",
