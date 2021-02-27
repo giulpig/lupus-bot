@@ -191,6 +191,8 @@ def update_from_text(update, context):
         else:
             game.n_players = temp
             game.state = State.SETPLAYERS
+
+            update.message.reply_text('About to sync database')
             #update.message.reply_text('You set ' + str(n_players) + ' players')
             sync_database()
 
