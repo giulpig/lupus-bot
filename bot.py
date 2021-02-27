@@ -127,6 +127,8 @@ def startGame(update, context):
 
     game.reset()
 
+    game.state = State.STARTED
+
     update.message.reply_text('How many players?')
     
     
