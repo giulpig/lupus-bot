@@ -177,6 +177,7 @@ def update_from_text(update, context):
         return
 
     elif game.state == State.STARTED:  #input Nplayers
+        update.message.reply_text('About to input Nplayers')
         temp = 0
         try:
             temp = int(update.message.text)
