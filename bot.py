@@ -39,27 +39,25 @@ class State(Enum):
 
 
 
-class LupusGame():
-    def __init__(self):
-        self.reset()
 
-    def reset(self):
-        self.roles = {    
-            "wolf🐺"    : 0,   #roles with number of players per role (input by players)
-            "bitch👩‍🎤"   : 0,
-            "medium👰"  : 0,
-            "madman🤪"  : 0,
-            "peasant🧑‍🌾" : 0
-        }
+roles = {    
+    "wolf"    : 0,   #roles with number of players per role (input by players)
+    "bitch"   : 0,
+    "medium"  : 0,
+    "madman"  : 0,
+    "peasant" : 0               #
+}                               #
+                                #  RESET GLOBALS IN STARTGAME
+uid_to_cid = {}                 #
+players = []                    #
+active_uids = set()
+cids = set()
+n_players = 0
+roled = 0
 
-        self.uid_to_cid = {}
-        self.players = []
-        self.active_uids = set()
-        self.cids = set()
-        self.n_players = 0
-        self.roled = 0
+state = State.STARTED
 
-        self.state = State.STARTED
+
 
 
 class Player():
@@ -70,19 +68,21 @@ class Player():
 
 
 
-game = LupusGame()
+
 
 
 
 
 def sync_database():
+    global cids
+    global list_users
 
-    game.cids = set()
+    cids = set()
     lst_users = db.distinct(key="uid")
     for i in lst_users:
         cid = db.find_one({"uid":i})["cid"]
-        game.uid_to_cid[i] = cid
-        game.cids.add(cid)
+        uid_to_cid[i] = cid
+        cids.add(cid)
 
 
     
@@ -121,17 +121,45 @@ def start(update, context):
 
 
 def startGame(update, context):
+    global state
+    global n_players
+    global players
+    global roled
+    global uid_to_cid
+    global active_uids
+    global cids
+    global roles
 
     if update.message.chat.type != "group":
         return
 
-    game.reset()
+    roles = {
+        "wolf"    : 0,   #reset globals
+        "bitch"   : 0,
+        "medium"  : 0,
+        "madman"  : 0,
+        "peasant" : 0
+    }
+
+    uid_to_cid = {}
+    players = []
+    active_uids = set()
+    cids = set()
+    n_players = 0
+    roled = 0
+
+    state = State.FINISHED
+
 
     update.message.reply_text('How many players?')
     
     
     
 def join(update, context):
+    global state
+    global n_players
+    global players
+    global roled
 
     user_id = str(update.message.from_user.id)
 
@@ -140,23 +168,23 @@ def join(update, context):
 
     #update.message.reply_text(str(update.message.from_user.id) + " v0")
     
-    if game.state == State.SETPLAYERS:
+    if state == State.SETPLAYERS:
         #update.message.reply_text(update.message.chat.username + " v1")
-        if not user_id in game.active_uids:
+        if not user_id in active_uids:
 
-            if not user_id in game.uid_to_cid:
+            if not user_id in uid_to_cid:
                 #update.message.reply_text("User " + user_id + " not found")
                 update.message.reply_text("User not found")
                 update.message.reply_text("You must start the bot @lupus_bot_camplus in private chat first (ask Hulio at @giulpig)")
 
             else:
-                players.append(Player("", user_id , game.uid_to_cid[user_id]))
-                game.active_uids.add(user_id)
+                players.append(Player("", user_id , uid_to_cid[user_id]))
+                active_uids.add(user_id)
         else:
             update.message.reply_text("You can't join twice in a game")
 
-        if len(game.players) == game.n_players:
-            game.state = State.JOINED
+        if len(players) == n_players:
+            state = State.JOINED
 
             update.message.reply_text("How many wolves?")
     
@@ -166,18 +194,20 @@ def join(update, context):
     
     
 def update_from_text(update, context):
+    global state
+    global n_players
+    global players
+    global roled
+
 
     if update.message.chat.type != "group":
         return
 
 
-    update.message.reply_text(str(game.state))
-
-    if game.state == State.FINISHED:
+    if state == State.FINISHED:
         return
 
-    elif game.state == State.STARTED:  #input Nplayers
-        update.message.reply_text('About to input Nplayers')
+    elif state == State.STARTED:  #input Nplayers
         temp = 0
         try:
             temp = int(update.message.text)
@@ -187,15 +217,12 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if False:
-        #if (temp < 4 or temp > 30):
+        if (temp < 4 or temp > 30):
             update.message.reply_text('Wrong input, players must be between 4 and 30')
         
         else:
-            game.n_players = temp
-            game.state = State.SETPLAYERS
-
-            update.message.reply_text('About to sync database')
+            n_players = temp
+            state = State.SETPLAYERS
             #update.message.reply_text('You set ' + str(n_players) + ' players')
             sync_database()
 
@@ -205,7 +232,7 @@ def update_from_text(update, context):
         
 
 
-    elif game.state == State.JOINED:  #input Nwolfes
+    elif state == State.JOINED:  #input Nwolfes
         temp = 0
         try:
             temp = int(update.message.text)
@@ -216,12 +243,12 @@ def update_from_text(update, context):
 
         ###DA RIMETTERE
         if False:  #(temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, too many')
+            update.message.reply_text('Wrong input, players must be between 4 and 30')
         
         else:
-            game.roles["wolf"] = temp
-            game.roled += temp
-            game.state = State.WOLFED
+            roles["wolf"] = temp
+            roled += temp
+            state = State.WOLFED
             #update.message.reply_text(str(roles["wolf"]) + ' wolf/ves')
             update.message.reply_text('How many bitches?')
             
@@ -229,7 +256,7 @@ def update_from_text(update, context):
 
 
 
-    elif game.state == State.WOLFED:  #input Nbitches
+    elif state == State.WOLFED:  #input Nbitches
         temp = 0
         try:
             temp = int(update.message.text)
@@ -239,14 +266,13 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if False:
-        #if (temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, too many')
+        if (temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, players must be between 4 and 30')
         
         else:
-            game.roles["bitch"] = temp
-            game.roled += temp
-            game.state = State.BITCHED
+            roles["bitch"] = temp
+            roled += temp
+            state = State.BITCHED
             #update.message.reply_text(str(roles["bitch"]) + ' bitch/es')
             update.message.reply_text('How many mediums?')
             
@@ -254,7 +280,7 @@ def update_from_text(update, context):
 
 
 
-    elif game.state == State.BITCHED:  #input Nbitches
+    elif state == State.BITCHED:  #input Nbitches
         temp = 0
         try:
             temp = int(update.message.text)
@@ -264,14 +290,13 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if False:
-        #if (temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, too many')
+        if (temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, players must be between 4 and 30')
         
         else:
-            game.roles["medium"] = temp
-            game.roled += temp
-            game.state = State.MEDIUMED
+            roles["medium"] = temp
+            roled += temp
+            state = State.MEDIUMED
             #update.message.reply_text(str(roles["medium"]) + ' medium/s')
             update.message.reply_text('How many madmans?')
             
@@ -280,7 +305,7 @@ def update_from_text(update, context):
 
 
 
-    elif game.state == State.MEDIUMED:  #input Nbitches
+    elif state == State.MEDIUMED:  #input Nbitches
         temp = 0
         try:
             temp = int(update.message.text)
@@ -290,17 +315,16 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if False:
-        #if (temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, too many')
+        if (temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, players must be between 4 and 30')
         
         else:
-            game.roles["madman"] = temp
-            game.roled += temp
-            game.state = State.MEDIUMED
+            roles["madman"] = temp
+            roled += temp
+            state = State.MEDIUMED
             #update.message.reply_text(str(roles["madman"]) + ' madman/s')
 
-            game.roles["peasant"] = n_players - roled
+            roles["peasant"] = n_players - roled
 
             send_roles(update, context)
 
@@ -311,20 +335,22 @@ def update_from_text(update, context):
 
 
 def send_roles(update, context):
+    global players
+    global roles
+    global state
 
-    random.shuffle(game.players)
+    random.shuffle(players)
 
     counter = 0
-    for role in game.roles:
-        for i in range(game.roles[role]):
-            game.players[counter].role = role
+    for role in roles:
+        for i in range(roles[role]):
+            players[counter].role = role
             counter += 1
 
-    for player in game.players:
-        context.bot.send_message(chat_id=player.cid, text="You are a " + player.role[:-1])
-        context.bot.send_message(chat_id=player.cid, text=player.role[-1])
+    for player in players:
+        context.bot.send_message(chat_id=player.cid, text="You are a " + player.role)
 
-    game.state = State.FINISHED
+    state = State.FINISHED
 
 
 
