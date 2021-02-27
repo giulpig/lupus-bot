@@ -184,7 +184,8 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if (temp < 4 or temp > 30):
+        if False:
+        #if (temp < 4 or temp > 30):
             update.message.reply_text('Wrong input, players must be between 4 and 30')
         
         else:
@@ -210,7 +211,7 @@ def update_from_text(update, context):
 
         ###DA RIMETTERE
         if False:  #(temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, players must be between 4 and 30')
+            update.message.reply_text('Wrong input, too many')
         
         else:
             game.roles["wolf"] = temp
@@ -233,8 +234,9 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if (temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, players must be between 4 and 30')
+        if False:
+        #if (temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, too many')
         
         else:
             game.roles["bitch"] = temp
@@ -257,8 +259,9 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if (temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, players must be between 4 and 30')
+        if False:
+        #if (temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, too many')
         
         else:
             game.roles["medium"] = temp
@@ -282,8 +285,9 @@ def update_from_text(update, context):
         
 
         ###DA RIMETTERE
-        if (temp < 0 or roled + temp > n_players):
-            update.message.reply_text('Wrong input, players must be between 4 and 30')
+        if False:
+        #if (temp < 0 or roled + temp > n_players):
+            update.message.reply_text('Wrong input, too many')
         
         else:
             game.roles["madman"] = temp
