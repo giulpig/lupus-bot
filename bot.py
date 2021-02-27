@@ -173,6 +173,8 @@ def update_from_text(update, context):
         return
 
 
+    update.message.reply_text(str(game.state))
+
     if game.state == State.FINISHED:
         return
 
