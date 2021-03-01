@@ -45,7 +45,7 @@ class LupusGame():
 
     def reset(self):
         self.roles = {    
-            "wolf🐺"    : 0,   #roles with number of players per role (input by players)
+            "wolf\U0001F43A"    : 0,   #roles with number of players per role (input by players)
             "bitch👩‍🎤"   : 0,
             "medium👰"  : 0,
             "madman🤪"  : 0,
@@ -321,8 +321,8 @@ def send_roles(update, context):
             counter += 1
 
     for player in game.players:
-        context.bot.send_message(chat_id=player.cid, text="You are a " + player.role[:-1])
-        context.bot.send_message(chat_id=player.cid, text=player.role[-1])
+        context.bot.send_message(chat_id=player.cid, text="You are a " + player.role)
+        #context.bot.send_message(chat_id=player.cid, text=player.role[-1])
 
     game.state = State.FINISHED
 
