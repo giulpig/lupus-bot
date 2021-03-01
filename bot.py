@@ -148,7 +148,7 @@ def startGame(update, context):
     n_players = 0
     roled = 0
 
-    state = State.FINISHED
+    state = State.STARTED
 
 
     update.message.reply_text('How many players?')
