@@ -167,6 +167,8 @@ def join(update, context):
     
 def update_from_text(update, context):
 
+    update.message.reply_text("Sono qui dio boe")
+
     if update.message.chat.type != "group":
         return
 
