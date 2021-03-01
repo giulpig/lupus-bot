@@ -150,7 +150,7 @@ def join(update, context):
                 update.message.reply_text("You must start the bot @lupus_bot_camplus in private chat first (ask Hulio at @giulpig)")
 
             else:
-                players.append(Player("", user_id , game.uid_to_cid[user_id]))
+                game.players.append(Player("", user_id , game.uid_to_cid[user_id]))
                 game.active_uids.add(user_id)
         else:
             update.message.reply_text("You can't join twice in a game")
