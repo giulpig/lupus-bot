@@ -321,7 +321,7 @@ def send_roles(update, context):
             counter += 1
 
     for player in game.players:
-        context.bot.send_message(chat_id=player.cid, text=(player.role))
+        context.bot.send_message(chat_id=player.cid, text=("You are a 🐺" + player.role))
         #context.bot.send_message(chat_id=player.cid, text=player.role[-1])
 
     game.state = State.FINISHED
