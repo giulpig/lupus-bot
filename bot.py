@@ -171,13 +171,13 @@ def update_from_text(update, context):
         return
 
 
-    update.message.reply_text(str(game.state))
+    #update.message.reply_text(str(game.state))
 
     if game.state == State.FINISHED:
         return
 
     elif game.state == State.STARTED:  #input Nplayers
-        update.message.reply_text('About to input Nplayers')
+        #update.message.reply_text('About to input Nplayers')
         temp = 0
         try:
             temp = int(update.message.text)
@@ -195,7 +195,7 @@ def update_from_text(update, context):
             game.n_players = temp
             game.state = State.SETPLAYERS
 
-            update.message.reply_text('About to sync database')
+            #update.message.reply_text('About to sync database')
             #update.message.reply_text('You set ' + str(n_players) + ' players')
             sync_database()
 
