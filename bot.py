@@ -300,7 +300,7 @@ def update_from_text(update, context):
             game.state = State.MEDIUMED
             #update.message.reply_text(str(roles["madman"]) + ' madman/s')
 
-            game.roles["peasant"] = n_players - roled
+            game.roles["peasant"] = game.n_players - game.roled
 
             send_roles(update, context)
 
