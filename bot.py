@@ -38,6 +38,15 @@ class State(Enum):
     FINISHED = 8
 
 
+emojis = {
+    "wolf"    : "🐺",
+    "bitch"   : "👩‍🎤",
+    "medium"  : "👰",
+    "madman"  : "🤪",
+    "peasant" : "🧑‍🌾"
+}
+
+
 
 class LupusGame():
     def __init__(self):
@@ -45,11 +54,11 @@ class LupusGame():
 
     def reset(self):
         self.roles = {    
-            "wolf🐺"    : 0,   #roles with number of players per role (input by players)
-            "bitch👩‍🎤"   : 0,
-            "medium👰"  : 0,
-            "madman🤪"  : 0,
-            "peasant🧑‍🌾" : 0
+            "wolf"    : 0,   #roles with number of players per role (input by players)
+            "bitch"   : 0,
+            "medium"  : 0,
+            "madman"  : 0,
+            "peasant" : 0
         }
 
         self.uid_to_cid = {}
@@ -321,8 +330,8 @@ def send_roles(update, context):
             counter += 1
 
     for player in game.players:
-        context.bot.send_message(chat_id=player.cid, text=("You are a 🐺" + player.role))
-        #context.bot.send_message(chat_id=player.cid, text=player.role[-1])
+        context.bot.send_message(chat_id=player.cid, text=("You are a " + player.role))
+        context.bot.send_message(chat_id=player.cid, text=emojis[player.role])
 
     game.state = State.FINISHED
 
