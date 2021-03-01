@@ -321,12 +321,16 @@ def send_roles(update, context):
             counter += 1
 
     for player in game.players:
-        context.bot.send_message(chat_id=player.cid, text=("You are a " + player.role.encode('UTF-8')))
+        context.bot.send_message(chat_id=player.cid, text=(player.role))
         #context.bot.send_message(chat_id=player.cid, text=player.role[-1])
 
     game.state = State.FINISHED
 
 
+
+
+def silent(update, context):
+    game.state = State.FINISHED
 
 
 
@@ -359,6 +363,8 @@ def main():
     
     dp.add_handler(CommandHandler("startgame", startGame)) #startGame handler
     dp.add_handler(CommandHandler("join",      join))      #startGame handler
+
+    dp.add_handler(CommandHandler("silent", silent))
     
    
     # on noncommand i.e message - echo the message on Telegram
