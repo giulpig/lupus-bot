@@ -1,5 +1,5 @@
 import logging
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
+from telegram.ext import *
 import os
 from enum import Enum
 import pymongo
@@ -166,8 +166,6 @@ def join(update, context):
     
     
 def update_from_text(update, context):
-
-    update.message.reply_text("Sono qui dio boe")
 
     if update.message.chat.type != "group":
         return
