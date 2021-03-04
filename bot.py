@@ -132,6 +132,7 @@ def start(update, context):
 def startGame(update, context):
 
     if update.message.chat.type != "group":
+        update.message.reply_text("You can't start a game if yoi are not in a group")
         return
 
     game.reset()
@@ -192,7 +193,7 @@ def update_from_text(update, context):
             temp = int(update.message.text)
             #update.message.reply_text('got input')
         except Exception as e:
-            pass
+            update.message.reply_text('Wrong input format')
         
 
         ###DA RIMETTERE
@@ -220,7 +221,7 @@ def update_from_text(update, context):
             temp = int(update.message.text)
             #update.message.reply_text('got input')
         except Exception as e:
-            pass
+            update.message.reply_text('Wrong input format')
         
 
         ###DA RIMETTERE
@@ -244,7 +245,7 @@ def update_from_text(update, context):
             temp = int(update.message.text)
             #update.message.reply_text('got input')
         except Exception as e:
-            pass
+            update.message.reply_text('Wrong input format')
         
 
         ###DA RIMETTERE
@@ -269,7 +270,7 @@ def update_from_text(update, context):
             temp = int(update.message.text)
             #update.message.reply_text('got input')
         except Exception as e:
-            pass
+            update.message.reply_text('Wrong input format')
         
 
         ###DA RIMETTERE
@@ -295,7 +296,7 @@ def update_from_text(update, context):
             temp = int(update.message.text)
             #update.message.reply_text('got input')
         except Exception as e:
-            pass
+            update.message.reply_text('Wrong input format')
         
 
         ###DA RIMETTERE
